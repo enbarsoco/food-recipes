@@ -9,12 +9,15 @@ export const recipeApi = createApi({
   endpoints: (builder) => ({
     getRecipes: builder.mutation({
       query: ({ query, health }) => {
+
         return {
-          url: `search?q=${query}_id=${Application_ID}&app_key=${Application_Keys}&&health="${health}`,
+          url: `search?q=${query}&app_id=${Application_ID}&app_key=${Application_Keys}&&health=${health}`,
+          // url: `search?q=${query}&app_id=${Application_ID}&app_key=${Application_Keys}&&health="${health}`,
+          method: "get",
         };
       },
     }),
   }),
 });
 
-export const {useGetRecipesMutation} = recipeApi;
+export const { useGetRecipesMutation } = recipeApi;

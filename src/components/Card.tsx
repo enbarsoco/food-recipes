@@ -1,7 +1,18 @@
 import React from "react";
 
-const Card = () => {
-  return <div>Card</div>;
+interface PropsFunction {
+  recipe: any;
+}
+
+const Card: React.FC<PropsFunction> = ({ recipe }) => {
+  return (
+    <div>
+      <section>
+          <img src={recipe.image}/>
+          {recipe.label}
+      </section>
+    </div>
+  );
 };
 
 export default Card;
