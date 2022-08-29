@@ -12,7 +12,6 @@ export const recipeApi = createApi({
 
         return {
           url: `search?q=${query}&app_id=${Application_ID}&app_key=${Application_Keys}&&health=${health}`,
-          // url: `search?q=${query}&app_id=${Application_ID}&app_key=${Application_Keys}&&health="${health}`,
           method: "get",
         };
       },

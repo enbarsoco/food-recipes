@@ -1,6 +1,40 @@
-import Card from "./components/Card";
+import ImageCard from "./components/ImageCard";
 import { useEffect, useState } from "react";
 import { useGetRecipesMutation } from "./services/recipeApi";
+import {Container} from "@mui/material";
+
+const options = [
+  {
+    label: "Vegan",
+    value: "vegan",
+  },
+  {
+    label: "Vegetarian",
+    value: "vegetarian",
+  },
+  {
+    label: "Paleo",
+    value: "paleo",
+  },
+  {
+    label: "Dairy Free",
+    value: "dairy-free",
+  },
+  {
+    label: "Low Sugar",
+    value: "low-sugar",
+  },
+  {
+    label: "Egg Free",
+    value: "egg-free",
+  },
+];
+
+const containerStyle = {
+  display:'grid',
+  gridTemplateColumns:'repeat(4,1fr)',
+  gap:'2em'
+}
 
 function App() {
   const [value, setValue] = useState("");
@@ -24,6 +58,10 @@ function App() {
     setValue("");
   };
 
+  const handleSelect = (e: any) => {
+    setHealth(e.target.value);
+  };
+
   return (
     <div>
       <input
@@ -34,9 +72,19 @@ function App() {
         type={"text"}
       />
       <button onClick={handleSearchClick}>Search</button>
-      {data?.hits?.map((item: any, index: any) => (
-        <Card key={index} recipe={item.recipe} />
-      ))}
+      <select onChange={handleSelect}>
+        {options.map((option, index) => (
+          <option value={option.value || ""} key={index}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <Container maxWidth={"lg"} style={containerStyle}>
+          {data?.hits?.map((item: any, index: any) => (
+              <ImageCard key={index} recipe={item.recipe} />
+          ))}
+      </Container>
+
     </div>
   );
 }
