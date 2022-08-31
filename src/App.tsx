@@ -1,7 +1,22 @@
 import ImageCard from "./components/ImageCard";
 import { useEffect, useState } from "react";
 import { useGetRecipesMutation } from "./services/recipeApi";
-import {Container} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  InputAdornment,
+  Link,
+  Select,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import RecipeModal from "./components/RecipeModal";
+import Loader from "./components/Loader";
+import Error from "./components/Error";
 
 const options = [
   {
@@ -30,12 +45,6 @@ const options = [
   },
 ];
 
-const containerStyle = {
-  display:'grid',
-  gridTemplateColumns:'repeat(4,1fr)',
-  gap:'2em'
-}
-
 function App() {
   const [value, setValue] = useState("");
   const [query, setQuery] = useState("");
@@ -53,39 +62,103 @@ function App() {
     await getRecipes({ query, health });
   };
 
-  const handleSearchClick = () => {
-    setQuery(value);
-    setValue("");
-  };
-
   const handleSelect = (e: any) => {
     setHealth(e.target.value);
   };
 
-  return (
-    <div>
-      <input
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
-        type={"text"}
-      />
-      <button onClick={handleSearchClick}>Search</button>
-      <select onChange={handleSelect}>
-        {options.map((option, index) => (
-          <option value={option.value || ""} key={index}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <Container maxWidth={"lg"} style={containerStyle}>
-          {data?.hits?.map((item: any, index: any) => (
-              <ImageCard key={index} recipe={item.recipe} />
-          ))}
-      </Container>
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    setQuery(value);
+    setValue("");
+  };
 
-    </div>
+  const toggleShow = (recipe: any) => {
+    setShow(!show);
+    setRecipe(recipe);
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (isError) {
+    return <Error />;
+  }
+  return (
+    <>
+      <AppBar position={"static"} style={{ backgroundColor: "aliceblue" }}>
+        <Toolbar>
+          <Typography variant={"h5"}>
+            <Link underline={"none"} href="/" style={{ color: "#868686" }}>
+              Edamam Recipes
+            </Link>
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Box
+        component={"form"}
+        onSubmit={handleSubmit}
+        sx={{
+          mt: 4,
+          mb: 4,
+          display: "flex",
+          justifyContent: "center",
+          gap: "5em",
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <TextField
+            placeholder={"Search for recipe..."}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant={"outlined"}
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+            type={"text"}
+          />
+
+          <Button
+            type={"submit"}
+            variant={"contained"}
+            sx={{ height: "55px" }}
+            className={"button-style"}
+          >
+            Search
+          </Button>
+        </div>
+        <Select
+          native
+          value={health}
+          onChange={handleSelect}
+          style={{ float: "right" }}
+        >
+          {options.map((option, index) => (
+            <option value={option.value || ""} key={index}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+      </Box>
+      <Container
+        maxWidth={"lg"}
+        sx={{ display: "grid" }}
+        className={"container-style"}
+      >
+        {data?.hits?.map((item: any, index: any) => (
+          <ImageCard toggleShow={toggleShow} key={index} recipe={item.recipe} />
+        ))}
+        {show && <RecipeModal recipe={recipe} setShow={setShow} show={show} />}
+      </Container>
+    </>
   );
 }
 

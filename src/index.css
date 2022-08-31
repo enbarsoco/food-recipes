@@ -23,3 +23,28 @@ code {
 .card-style:hover {
   filter: grayscale(0);
 }
+
+.container-style {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3em;
+}
+
+@media (max-width: 50em) {
+  .container-style {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-style {
+    filter: grayscale(0);
+  }
+}
+
+@media (max-width: 572px) {
+  .container-style {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .button-style {
+    width: 70%;
+  }
+}
